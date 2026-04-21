@@ -58,7 +58,7 @@ export function Avatar({ user, size = 36, showStatus = false }) {
   const cls = size <= 28 ? 'avatar-sm' : size >= 72 ? 'avatar-xl' : size >= 48 ? 'avatar-lg' : '';
   const hasImg = !!user?.avatar && !imgError;
   return (
-    <div className={`avatar ${cls}`} style={{ background: user?.color || '#9fb42c', width: size, height: size }} title={user?.name}>
+    <div className={`avatar ${cls}`} style={{ background: user?.color || '#9fb42c', width: size, height: size }} aria-label={user?.name}>
       {hasImg ? (
         <img src={user.avatar} alt="" draggable={false} onError={() => setImgError(true)}
           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />

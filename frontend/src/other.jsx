@@ -77,6 +77,7 @@ export function Profile() {
   const [form, setForm] = useState({ bio: user.bio || '', signature: user.signature || '', color: user.color, title: user.title || '', status: user.status });
   const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
   const [busy, setBusy] = useState({ avatar: false, cover: false });
+  const [avatarHover, setAvatarHover] = useState(false);
   const avatarInput = useRef(null);
   const coverInput = useRef(null);
 
@@ -164,14 +165,18 @@ export function Profile() {
         </div>
 
         <div style={{ padding: '0 28px 24px', display: 'flex', gap: 22 }}>
-          <div style={{ marginTop: -60, position: 'relative', border: '4px solid var(--bg-surface)', borderRadius: '50%', cursor: 'pointer', flexShrink: 0, background: 'var(--bg-surface)' }}
-            onClick={() => avatarInput.current?.click()} title="Clique para trocar">
-            <Avatar user={{ ...user, ...form }} size={120} showStatus />
-            <div className="avatar-overlay" style={{
+          <div
+            onClick={() => avatarInput.current?.click()}
+            onMouseEnter={() => setAvatarHover(true)}
+            onMouseLeave={() => setAvatarHover(false)}
+            style={{ marginTop: -60, position: 'relative', width: 128, height: 128, borderRadius: '50%', cursor: 'pointer', flexShrink: 0, overflow: 'hidden' }}>
+            <Avatar user={{ ...user, ...form }} size={128} showStatus />
+            <div style={{
               position: 'absolute', inset: 0, borderRadius: '50%',
-              background: 'rgba(0,0,0,0.55)', color: 'white', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 4,
-              opacity: busy.avatar ? 1 : 0, transition: 'opacity 160ms', pointerEvents: 'none',
+              background: 'rgba(0,0,0,0.55)', color: 'white',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexDirection: 'column', gap: 4, pointerEvents: 'none',
+              opacity: (avatarHover || busy.avatar) ? 1 : 0, transition: 'opacity 140ms',
             }}>
               {busy.avatar ? (
                 <span style={{ fontSize: 11, fontWeight: 600 }}>Enviando...</span>

@@ -284,12 +284,6 @@ input, textarea, select {
 }
 .avatar img { user-select: none; }
 
-/* Hover overlay on profile avatar */
-*[class*="avatar"]:hover > .avatar-overlay,
-div:has(> .avatar):hover > .avatar-overlay {
-  opacity: 1 !important;
-}
-
 /* ============================================================
    APP SHELL
    ============================================================ */

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { toast } from './data.jsx';
+import { toast, DataProvider, useData } from './data.jsx';
+import { AuthProvider, useAuth } from './auth.jsx';
 import { Toasts, Icons } from './components.jsx';
+import { connectSocket, disconnectSocket } from './socket.js';
 import Login from './login.jsx';
+import ChangePassword from './change-password.jsx';
 import { Sidebar, Topbar, CmdK, UserModal } from './shell.jsx';
 import Dashboard from './dashboard.jsx';
 import Chat from './chat.jsx';
@@ -19,8 +22,37 @@ const TWEAK_DEFAULTS = {
   forumStyle: 'modern',
 };
 
-export default function App() {
-  const [authed, setAuthed] = useState(() => localStorage.getItem('stm_authed') === '1');
+export default function Root() {
+  return (
+    <AuthProvider>
+      <Gate />
+    </AuthProvider>
+  );
+}
+
+function Gate() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: 'var(--bg-base)', color: 'var(--text-secondary)' }}>
+        Carregando...
+      </div>
+    );
+  }
+
+  if (!user) return <><Login /><Toasts /></>;
+  if (user.mustChangePw) return <><ChangePassword /><Toasts /></>;
+
+  return (
+    <DataProvider>
+      <App />
+    </DataProvider>
+  );
+}
+
+function App() {
+  const { user, logout } = useAuth();
   const [route, setRoute] = useState(() => localStorage.getItem('stm_route') || 'dashboard');
   const [userModal, setUserModal] = useState(null);
   const [cmdk, setCmdk] = useState(false);
@@ -38,7 +70,11 @@ export default function App() {
   }, [tweaks]);
 
   useEffect(() => { localStorage.setItem('stm_route', route); }, [route]);
-  useEffect(() => { localStorage.setItem('stm_authed', authed ? '1' : '0'); }, [authed]);
+
+  useEffect(() => {
+    connectSocket();
+    return () => disconnectSocket();
+  }, []);
 
   useEffect(() => {
     const h = e => {
@@ -50,25 +86,15 @@ export default function App() {
 
   const updateTweak = (k, v) => setTweaks(t => ({ ...t, [k]: v }));
 
-  if (!authed) {
-    return <>
-      <Login onLogin={() => setAuthed(true)} />
-      <Toasts />
-    </>;
-  }
-
-  const crumbsFor = (r) => {
-    const map = {
-      dashboard: ['STM', 'Dashboard'],
-      chat: ['STM', 'Chat'],
-      forum: ['STM', 'Fórum'],
-      vault: ['STM', 'Cofre'],
-      ranking: ['STM', 'Ranking'],
-      profile: ['STM', 'Meu perfil'],
-      admin: ['STM', 'Administração'],
-    };
-    return map[r] || ['STM'];
-  };
+  const crumbsFor = (r) => ({
+    dashboard: ['STM', 'Dashboard'],
+    chat: ['STM', 'Chat'],
+    forum: ['STM', 'Fórum'],
+    vault: ['STM', 'Cofre'],
+    ranking: ['STM', 'Ranking'],
+    profile: ['STM', 'Meu perfil'],
+    admin: ['STM', 'Administração'],
+  })[r] || ['STM'];
 
   const toggleTheme = () => {
     const order = ['dark', 'verde', 'claro'];
@@ -79,8 +105,8 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Sidebar current={route} setCurrent={setRoute} onOpenSearch={() => setCmdk(true)} />
-      <Topbar crumbs={crumbsFor(route)} onThemeToggle={toggleTheme} theme={tweaks.theme} />
+      <Sidebar current={route} setCurrent={setRoute} onOpenSearch={() => setCmdk(true)} onLogout={logout} />
+      <Topbar crumbs={crumbsFor(route)} onThemeToggle={toggleTheme} theme={tweaks.theme} onOpenTweaks={() => setTweaksOpen(t => !t)} />
       <main className="main">
         {route === 'dashboard' && <Dashboard density={tweaks.density} layout={tweaks.dashboardLayout} setUserModal={setUserModal} />}
         {route === 'chat' && <Chat setUserModal={setUserModal} />}

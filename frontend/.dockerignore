@@ -1,6 +1,4 @@
 node_modules
 dist
 .git
-chats
-project
-*.md
+*.log

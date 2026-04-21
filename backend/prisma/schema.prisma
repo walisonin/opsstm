@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  handle       String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("member") // super_admin | admin | moderator | member
+  status       String    @default("offline") // online | away | dnd | offline
+  color        String    @default("#9fb42c")
+  bio          String?
+  title        String?
+  roleDesc     String?
+  reputation   Int       @default(0)
+  postCount    Int       @default(0)
+  signature    String?
+  avatar       String?
+  joined       DateTime  @default(now())
+  lastSeen     DateTime?
+  mustChangePw Boolean   @default(false)
+  active       Boolean   @default(true)
+
+  shortcuts     Shortcut[]
+  vaultUpdates  VaultItem[]     @relation("vaultUpdatedBy")
+  topics        ForumTopic[]
+  forumPosts    ForumPost[]
+  chatMessages  ChatMessage[]
+  announcements Announcement[]
+  auditLogs     AuditLog[]      @relation("auditUser")
+  invites       Invite[]        @relation("inviter")
+
+  @@index([email])
+  @@index([handle])
+}
+
+model Shortcut {
+  id        String   @id @default(cuid())
+  label     String
+  url       String
+  icon      String   @default("link")
+  color     String   @default("#9fb42c")
+  clicks    Int      @default(0)
+  order     Int      @default(0)
+  createdById String
+  createdBy User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VaultCategory {
+  id    String @id @default(cuid())
+  name  String
+  icon  String @default("box")
+  color String @default("#9fb42c")
+  order Int    @default(0)
+  items VaultItem[]
+}
+
+model VaultItem {
+  id          String   @id @default(cuid())
+  categoryId  String
+  category    VaultCategory @relation(fields: [categoryId], references: [id])
+  name        String
+  url         String
+  username    String?
+  passwordEnc String   // AES-encrypted
+  tags        String[] @default([])
+  notes       String?
+  updatedById String
+  updatedBy   User     @relation("vaultUpdatedBy", fields: [updatedById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ForumCategory {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  icon        String   @default("forum")
+  color       String   @default("#9fb42c")
+  order       Int      @default(0)
+  topics      ForumTopic[]
+  createdAt   DateTime @default(now())
+}
+
+model ForumTopic {
+  id         String   @id @default(cuid())
+  categoryId String
+  category   ForumCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title      String
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id])
+  pinned     Boolean  @default(false)
+  locked     Boolean  @default(false)
+  hot        Boolean  @default(false)
+  views      Int      @default(0)
+  tags       String[] @default([])
+  posts      ForumPost[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model ForumPost {
+  id        String   @id @default(cuid())
+  topicId   String
+  topic     ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  body      String
+  reactions Json     @default("{}")
+  editedAt  DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([topicId])
+}
+
+model ChatChannel {
+  id       String   @id @default(cuid())
+  name     String   @unique
+  topic    String?
+  type     String   @default("text") // text | announce
+  order    Int      @default(0)
+  messages ChatMessage[]
+  createdAt DateTime @default(now())
+}
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  channelId  String
+  channel    ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id])
+  body       String
+  replyToId  String?
+  attachment Json?
+  reactions  Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  @@index([channelId, createdAt])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String?
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  priority  String   @default("medium") // high | medium | low
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invite {
+  id        String   @id @default(cuid())
+  email     String
+  role      String   @default("member")
+  token     String   @unique
+  inviterId String
+  inviter   User     @relation("inviter", fields: [inviterId], references: [id])
+  acceptedAt DateTime?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("auditUser", fields: [userId], references: [id])
+  action    String
+  target    String?
+  meta      Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

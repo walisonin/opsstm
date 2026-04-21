@@ -138,7 +138,7 @@ export function Profile() {
   const colors = ['#9fb42c', '#7e3f62', '#1f6fb8', '#ea431b', '#eeb23e', '#1f8a8a', '#f2801f', '#c72124', '#947034', '#b4c93d'];
 
   const coverBg = user.coverImage
-    ? `#0e2d1b url("${user.coverImage}") center/contain no-repeat`
+    ? `url("${user.coverImage}") center/cover no-repeat`
     : `linear-gradient(135deg, ${form.color}, #174628)`;
 
   return (

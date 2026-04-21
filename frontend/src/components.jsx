@@ -61,7 +61,7 @@ export function Avatar({ user, size = 36, showStatus = false }) {
     <div className={`avatar ${cls}`} style={{ background: user?.color || '#9fb42c', width: size, height: size }} title={user?.name}>
       {hasImg ? (
         <img src={user.avatar} alt="" draggable={false} onError={() => setImgError(true)}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%', display: 'block' }} />
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
       ) : initials(user?.name)}
       {showStatus && <span className="status" style={{ background: `var(--status-${user?.status || 'offline'})` }} />}
     </div>

@@ -230,7 +230,7 @@ export function UserModal({ user, onClose }) {
   if (!user) return null;
   const u = fresh || user;
   const coverBg = u.coverImage
-    ? `#0e2d1b url("${u.coverImage}") center/contain no-repeat`
+    ? `url("${u.coverImage}") center/cover no-repeat`
     : `linear-gradient(135deg, ${u.color || '#9fb42c'}, ${u.color || '#9fb42c'}99)`;
 
   return (

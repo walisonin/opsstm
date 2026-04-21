@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express, { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -41,9 +41,11 @@ uploadsRouter.post('/', requireAuth, upload.single('file'), (req, res) => {
   });
 });
 
-uploadsRouter.get('/:id', (req, res) => {
-  const filename = req.params.id.replace(/[^a-zA-Z0-9.]/g, '');
-  const filepath = path.join(UPLOAD_DIR, filename);
-  if (!fs.existsSync(filepath)) return res.status(404).json({ error: 'Não encontrado' });
-  res.sendFile(filepath);
-});
+// Serve uploaded files as static assets with caching.
+// Must come after the POST route so it doesn't swallow uploads.
+uploadsRouter.use(express.static(UPLOAD_DIR, {
+  maxAge: '7d',
+  fallthrough: false,
+  index: false,
+  dotfiles: 'deny',
+}));

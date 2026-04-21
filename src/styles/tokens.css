@@ -1,0 +1,218 @@
+/* ============================================================
+   STM Operações — Design Tokens
+   Brand: St Marché — Portal interno
+   ============================================================ */
+
+:root {
+  /* Brand palette (from brand book) */
+  --brand-green-900: #102d1c;
+  --brand-green-800: #174628;
+  --brand-green-700: #1e5030;
+  --brand-green-600: #225633;
+  --brand-green-500: #2a6a40;
+  --brand-lime-500: #9fb42c;
+  --brand-lime-400: #b4c93d;
+  --brand-lime-300: #c6dc55;
+
+  /* Tile (ladrilho) accent colors */
+  --tile-purple: #7e3f62;
+  --tile-blue: #1f6fb8;
+  --tile-teal: #1f8a8a;
+  --tile-ochre: #947034;
+  --tile-red: #c72124;
+  --tile-orange: #ea431b;
+  --tile-amber: #f2801f;
+  --tile-yellow: #eeb23e;
+
+  /* Semantic status */
+  --status-online: #6fd36b;
+  --status-away: #f2801f;
+  --status-dnd: #c72124;
+  --status-offline: #6b7a6e;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  /* Type scale */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 14px;
+  --fs-base: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
+  --fs-2xl: 26px;
+  --fs-3xl: 34px;
+  --fs-4xl: 48px;
+
+  --font-sans: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Archivo Black', 'Inter Tight', sans-serif; /* stand-in for Zoombold */
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+}
+
+/* ============================================================
+   THEME: DARK (default)
+   ============================================================ */
+[data-theme="dark"] {
+  --bg-base: #0d1410;
+  --bg-canvas: #0f1713;
+  --bg-surface: #151e18;
+  --bg-elev-1: #1b261f;
+  --bg-elev-2: #222f27;
+  --bg-hover: rgba(255, 255, 255, 0.04);
+  --bg-active: rgba(159, 180, 44, 0.12);
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  --text-primary: #eef2ea;
+  --text-secondary: #a6b0a5;
+  --text-muted: #6d776d;
+  --text-inverted: #0d1410;
+
+  --accent: var(--brand-lime-500);
+  --accent-hover: var(--brand-lime-400);
+  --accent-ink: #0d1410;
+  --accent-soft: rgba(159, 180, 44, 0.14);
+
+  --focus-ring: rgba(159, 180, 44, 0.45);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 22px 55px -20px rgba(0, 0, 0, 0.7);
+
+  --sidebar-bg: #0a100c;
+  --topbar-bg: rgba(15, 23, 19, 0.85);
+  --ladrilho-alpha: 0.07;
+}
+
+/* ============================================================
+   THEME: VERDE (St Marché green immersive)
+   ============================================================ */
+[data-theme="verde"] {
+  --bg-base: #0e2d1b;
+  --bg-canvas: #12381f;
+  --bg-surface: #174628;
+  --bg-elev-1: #1d5432;
+  --bg-elev-2: #256040;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-active: rgba(159, 180, 44, 0.18);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.24);
+
+  --text-primary: #f2f5ea;
+  --text-secondary: #bcc8b4;
+  --text-muted: #87968a;
+  --text-inverted: #102d1c;
+
+  --accent: var(--brand-lime-500);
+  --accent-hover: var(--brand-lime-300);
+  --accent-ink: #102d1c;
+  --accent-soft: rgba(159, 180, 44, 0.22);
+
+  --focus-ring: rgba(198, 220, 85, 0.55);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+
+  --sidebar-bg: #0b2416;
+  --topbar-bg: rgba(18, 56, 31, 0.88);
+  --ladrilho-alpha: 0.09;
+}
+
+/* ============================================================
+   THEME: CLARO (light)
+   ============================================================ */
+[data-theme="claro"] {
+  --bg-base: #f4f3ec;
+  --bg-canvas: #faf9f2;
+  --bg-surface: #ffffff;
+  --bg-elev-1: #ffffff;
+  --bg-elev-2: #f7f6ee;
+  --bg-hover: rgba(23, 70, 40, 0.05);
+  --bg-active: rgba(23, 70, 40, 0.1);
+
+  --border-subtle: rgba(23, 70, 40, 0.08);
+  --border-default: rgba(23, 70, 40, 0.14);
+  --border-strong: rgba(23, 70, 40, 0.28);
+
+  --text-primary: #14241a;
+  --text-secondary: #4b5c4f;
+  --text-muted: #7c8a80;
+  --text-inverted: #ffffff;
+
+  --accent: #174628;
+  --accent-hover: #225633;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(23, 70, 40, 0.1);
+
+  --focus-ring: rgba(23, 70, 40, 0.45);
+
+  --shadow-sm: 0 1px 2px rgba(23, 70, 40, 0.08);
+  --shadow-md: 0 6px 24px rgba(23, 70, 40, 0.1);
+  --shadow-lg: 0 24px 60px -24px rgba(23, 70, 40, 0.28);
+
+  --sidebar-bg: #174628;
+  --sidebar-text: #f2f5ea;
+  --topbar-bg: rgba(255, 255, 255, 0.9);
+  --ladrilho-alpha: 0.18;
+}
+
+/* ============================================================
+   ACCENT VARIATIONS (tweak)
+   ============================================================ */
+[data-accent="lime"] {
+  --accent: var(--brand-lime-500);
+  --accent-hover: var(--brand-lime-400);
+  --accent-ink: #0d1410;
+  --accent-soft: rgba(159, 180, 44, 0.16);
+  --focus-ring: rgba(159, 180, 44, 0.5);
+}
+[data-accent="verde"] {
+  --accent: var(--brand-green-600);
+  --accent-hover: var(--brand-green-500);
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(34, 86, 51, 0.22);
+  --focus-ring: rgba(34, 86, 51, 0.55);
+}
+[data-accent="purple"] {
+  --accent: var(--tile-purple);
+  --accent-hover: #a0527f;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(126, 63, 98, 0.22);
+  --focus-ring: rgba(126, 63, 98, 0.5);
+}
+[data-accent="orange"] {
+  --accent: var(--tile-orange);
+  --accent-hover: var(--tile-amber);
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(234, 67, 27, 0.2);
+  --focus-ring: rgba(234, 67, 27, 0.5);
+}
+[data-accent="blue"] {
+  --accent: var(--tile-blue);
+  --accent-hover: #2a86d5;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(31, 111, 184, 0.22);
+  --focus-ring: rgba(31, 111, 184, 0.5);
+}

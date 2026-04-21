@@ -1,0 +1,9 @@
+services:
+  stm:
+    build: .
+    container_name: stm-operacoes
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    # Para HTTPS com Nginx Proxy Manager ou Traefik, remova as portas acima
+    # e adicione as labels do seu proxy reverso aqui.

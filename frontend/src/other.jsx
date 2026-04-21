@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from './auth.jsx';
 import { useData, toast } from './data.jsx';
 import { api } from './api.js';
@@ -73,9 +73,12 @@ function Podium({ u, place, h, onClick }) {
 }
 
 export function Profile() {
-  const { user, updateMe } = useAuth();
+  const { user, updateMe, setUser } = useAuth();
   const [form, setForm] = useState({ bio: user.bio || '', signature: user.signature || '', color: user.color, title: user.title || '', status: user.status });
   const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
+  const [busy, setBusy] = useState({ avatar: false, cover: false });
+  const avatarInput = useRef(null);
+  const coverInput = useRef(null);
 
   const save = async () => {
     try { await updateMe(form); toast('Perfil atualizado', 'ok'); }
@@ -92,21 +95,99 @@ export function Profile() {
     } catch (e) { toast(e.message, 'err'); }
   };
 
+  const uploadAvatar = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return toast('Imagem maior que 5MB', 'err');
+    setBusy(b => ({ ...b, avatar: true }));
+    try {
+      const { user: updated } = await api.auth.uploadAvatar(file);
+      setUser(updated);
+      toast('Avatar atualizado 🌿', 'ok');
+    } catch (err) { toast(err.message || 'Erro no upload', 'err'); }
+    finally { setBusy(b => ({ ...b, avatar: false })); }
+  };
+
+  const uploadCover = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) return toast('Imagem maior que 5MB', 'err');
+    setBusy(b => ({ ...b, cover: true }));
+    try {
+      const { user: updated } = await api.auth.uploadCover(file);
+      setUser(updated);
+      toast('Capa atualizada', 'ok');
+    } catch (err) { toast(err.message || 'Erro no upload', 'err'); }
+    finally { setBusy(b => ({ ...b, cover: false })); }
+  };
+
+  const removeAvatar = async () => {
+    if (!confirm('Remover avatar?')) return;
+    try { const { user: u } = await api.auth.removeAvatar(); setUser(u); toast('Avatar removido', 'ok'); }
+    catch (e) { toast(e.message, 'err'); }
+  };
+
+  const removeCover = async () => {
+    if (!confirm('Remover capa?')) return;
+    try { const { user: u } = await api.auth.removeCover(); setUser(u); toast('Capa removida', 'ok'); }
+    catch (e) { toast(e.message, 'err'); }
+  };
+
   const colors = ['#9fb42c', '#7e3f62', '#1f6fb8', '#ea431b', '#eeb23e', '#1f8a8a', '#f2801f', '#c72124', '#947034', '#b4c93d'];
+
+  const coverBg = user.coverImage
+    ? `url("${user.coverImage}") center/cover no-repeat`
+    : `linear-gradient(135deg, ${form.color}, #174628)`;
 
   return (
     <div className="page" style={{ maxWidth: 1000 }}>
+      <input ref={avatarInput} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={uploadAvatar} style={{ display: 'none' }} />
+      <input ref={coverInput} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={uploadCover} style={{ display: 'none' }} />
+
       <div className="card" style={{ position: 'relative', overflow: 'hidden', marginBottom: 24 }}>
-        <div style={{ height: 150, background: `linear-gradient(135deg, ${form.color}, #174628)`, position: 'relative' }}>
-          <div style={{ position: 'absolute', right: -30, top: -30, opacity: 0.18 }}><Ladrilho color="#fff" size={200} /></div>
+        <div style={{ height: 180, background: coverBg, position: 'relative' }}>
+          {!user.coverImage && <div style={{ position: 'absolute', right: -30, top: -30, opacity: 0.18 }}><Ladrilho color="#fff" size={200} /></div>}
+          <div style={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 8 }}>
+            {user.coverImage && (
+              <button className="btn btn-sm" style={{ background: 'rgba(0,0,0,0.5)', color: 'white', backdropFilter: 'blur(6px)' }} onClick={removeCover}>
+                {Icons.trash} Remover
+              </button>
+            )}
+            <button className="btn btn-sm" disabled={busy.cover}
+              style={{ background: 'rgba(255,255,255,0.9)', color: 'var(--brand-green-800)' }}
+              onClick={() => coverInput.current?.click()}>
+              {Icons.upload} {busy.cover ? 'Enviando...' : (user.coverImage ? 'Trocar capa' : 'Adicionar capa')}
+            </button>
+          </div>
         </div>
         <div style={{ padding: '0 28px 24px', display: 'flex', gap: 22, alignItems: 'flex-end', marginTop: -40 }}>
-          <div style={{ border: '4px solid var(--bg-surface)', borderRadius: '50%' }}>
+          <div style={{ position: 'relative', border: '4px solid var(--bg-surface)', borderRadius: '50%', cursor: 'pointer' }}
+            onClick={() => avatarInput.current?.click()} title="Clique para trocar">
             <Avatar user={{ ...user, ...form }} size={120} showStatus />
+            <div className="avatar-overlay" style={{
+              position: 'absolute', inset: 0, borderRadius: '50%',
+              background: 'rgba(0,0,0,0.55)', color: 'white', display: 'flex',
+              alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 4,
+              opacity: busy.avatar ? 1 : 0, transition: 'opacity 160ms', pointerEvents: 'none',
+            }}>
+              {busy.avatar ? (
+                <span style={{ fontSize: 11, fontWeight: 600 }}>Enviando...</span>
+              ) : (
+                <>{Icons.upload}<span style={{ fontSize: 11, fontWeight: 600 }}>Trocar</span></>
+              )}
+            </div>
           </div>
           <div style={{ flex: 1, paddingBottom: 6 }}>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, textTransform: 'uppercase', margin: 0 }}>{user.name}</h2>
             <div style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 4 }}>{user.email} · @{user.handle}</div>
+            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+              <button className="btn btn-ghost btn-sm" onClick={() => avatarInput.current?.click()} disabled={busy.avatar}>
+                {Icons.upload} Trocar foto
+              </button>
+              {user.avatar && <button className="btn btn-ghost btn-sm" onClick={removeAvatar}>{Icons.trash} Remover</button>}
+            </div>
           </div>
         </div>
       </div>

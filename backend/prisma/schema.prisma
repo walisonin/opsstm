@@ -23,6 +23,7 @@ model User {
   postCount    Int       @default(0)
   signature    String?
   avatar       String?
+  coverImage   String?
   joined       DateTime  @default(now())
   lastSeen     DateTime?
   mustChangePw Boolean   @default(false)

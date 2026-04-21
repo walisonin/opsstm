@@ -106,7 +106,7 @@ function App() {
   return (
     <div className="app-shell">
       <Sidebar current={route} setCurrent={setRoute} onOpenSearch={() => setCmdk(true)} onLogout={logout} />
-      <Topbar crumbs={crumbsFor(route)} onThemeToggle={toggleTheme} theme={tweaks.theme} onOpenTweaks={() => setTweaksOpen(t => !t)} />
+      <Topbar crumbs={crumbsFor(route)} onThemeToggle={toggleTheme} theme={tweaks.theme} onOpenTweaks={() => setTweaksOpen(t => !t)} setCurrent={setRoute} />
       <main className="main">
         {route === 'dashboard' && <Dashboard density={tweaks.density} layout={tweaks.dashboardLayout} setUserModal={setUserModal} />}
         {route === 'chat' && <Chat setUserModal={setUserModal} />}

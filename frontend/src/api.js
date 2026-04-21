@@ -51,6 +51,26 @@ export const api = {
     me: () => methods.get('/auth/me'),
     updateMe: (data) => methods.patch('/auth/me', data),
     changePassword: (currentPassword, newPassword) => methods.post('/auth/change-password', { currentPassword, newPassword }),
+    uploadAvatar: async (file) => {
+      const form = new FormData();
+      form.append('file', file);
+      const headers = {};
+      if (authToken) headers.Authorization = `Bearer ${authToken}`;
+      const res = await fetch(`${BASE}/auth/me/avatar`, { method: 'POST', body: form, credentials: 'include', headers });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Upload falhou');
+      return res.json();
+    },
+    uploadCover: async (file) => {
+      const form = new FormData();
+      form.append('file', file);
+      const headers = {};
+      if (authToken) headers.Authorization = `Bearer ${authToken}`;
+      const res = await fetch(`${BASE}/auth/me/cover`, { method: 'POST', body: form, credentials: 'include', headers });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Upload falhou');
+      return res.json();
+    },
+    removeAvatar: () => methods.delete('/auth/me/avatar'),
+    removeCover: () => methods.delete('/auth/me/cover'),
   },
 
   users: {

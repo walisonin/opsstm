@@ -280,6 +280,14 @@ input, textarea, select {
   height: 10px;
   border-radius: 50%;
   border: 2px solid var(--bg-surface);
+  z-index: 2;
+}
+.avatar img { user-select: none; }
+
+/* Hover overlay on profile avatar */
+*[class*="avatar"]:hover > .avatar-overlay,
+div:has(> .avatar):hover > .avatar-overlay {
+  opacity: 1 !important;
 }
 
 /* ============================================================

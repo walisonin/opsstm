@@ -53,12 +53,15 @@ export function BrandMark({ size = 36 }) {
 }
 
 export function Avatar({ user, size = 36, showStatus = false }) {
-  const px = size;
   const cls = size <= 28 ? 'avatar-sm' : size >= 72 ? 'avatar-xl' : size >= 48 ? 'avatar-lg' : '';
+  const hasImg = !!user?.avatar;
   return (
-    <div className={`avatar ${cls}`} style={{ background: user.color, width: px, height: px }} title={user.name}>
-      {initials(user.name)}
-      {showStatus && <span className="status" style={{ background: `var(--status-${user.status})` }} />}
+    <div className={`avatar ${cls}`} style={{ background: user?.color || '#9fb42c', width: size, height: size }} title={user?.name}>
+      {hasImg ? (
+        <img src={user.avatar} alt={user.name} draggable={false}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', display: 'block' }} />
+      ) : initials(user?.name)}
+      {showStatus && <span className="status" style={{ background: `var(--status-${user?.status || 'offline'})` }} />}
     </div>
   );
 }

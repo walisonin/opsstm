@@ -25,7 +25,7 @@ adminRouter.get('/users', async (req, res) => {
     select: {
       id: true, email: true, handle: true, name: true, role: true, status: true,
       color: true, title: true, roleDesc: true, joined: true, lastSeen: true, active: true,
-      postCount: true, reputation: true, mustChangePw: true,
+      postCount: true, reputation: true, mustChangePw: true, avatar: true,
     },
   });
   res.json({ users });

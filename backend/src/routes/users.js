@@ -8,7 +8,8 @@ usersRouter.use(requireAuth);
 const publicFields = {
   id: true, email: true, handle: true, name: true, role: true, status: true,
   color: true, bio: true, title: true, roleDesc: true, reputation: true,
-  postCount: true, signature: true, avatar: true, joined: true, lastSeen: true, active: true,
+  postCount: true, signature: true, avatar: true, coverImage: true,
+  joined: true, lastSeen: true, active: true,
 };
 
 usersRouter.get('/', async (req, res) => {

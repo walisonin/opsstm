@@ -1,10 +1,29 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import path from 'path';
+import fs from 'fs';
+import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import { prisma } from '../lib/db.js';
 import { signToken } from '../lib/jwt.js';
 import { requireAuth } from '../middleware/auth.js';
 import { audit } from '../lib/audit.js';
+
+const UPLOAD_DIR = process.env.UPLOAD_DIR || '/uploads';
+if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
+const imageUpload = multer({
+  storage: multer.diskStorage({
+    destination: UPLOAD_DIR,
+    filename: (req, file, cb) => {
+      const ext = (path.extname(file.originalname) || '').toLowerCase().replace(/[^a-z0-9.]/g, '').slice(0, 6);
+      cb(null, `${crypto.randomBytes(12).toString('hex')}${ext}`);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => cb(null, /^image\/(jpeg|png|webp|gif)$/i.test(file.mimetype)),
+});
 
 export const authRouter = Router();
 
@@ -86,4 +105,45 @@ authRouter.post('/change-password', requireAuth, async (req, res) => {
 
   await audit(req.user.id, 'password_changed', null, null, req);
   res.json({ ok: true });
+});
+
+function tryUnlinkFromUrl(url) {
+  if (!url || !url.startsWith('/api/uploads/')) return;
+  const filename = url.replace('/api/uploads/', '').replace(/[^a-zA-Z0-9.]/g, '');
+  const filepath = path.join(UPLOAD_DIR, filename);
+  fs.unlink(filepath, () => {});
+}
+
+authRouter.post('/me/avatar', requireAuth, imageUpload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Imagem inválida (jpg/png/webp/gif até 5MB)' });
+  const url = `/api/uploads/${req.file.filename}`;
+  tryUnlinkFromUrl(req.user.avatar);
+  const user = await prisma.user.update({ where: { id: req.user.id }, data: { avatar: url } });
+  await audit(req.user.id, 'avatar_updated', null, null, req);
+  const { passwordHash, ...safe } = user;
+  res.json({ user: safe });
+});
+
+authRouter.delete('/me/avatar', requireAuth, async (req, res) => {
+  tryUnlinkFromUrl(req.user.avatar);
+  const user = await prisma.user.update({ where: { id: req.user.id }, data: { avatar: null } });
+  const { passwordHash, ...safe } = user;
+  res.json({ user: safe });
+});
+
+authRouter.post('/me/cover', requireAuth, imageUpload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Imagem inválida (jpg/png/webp/gif até 5MB)' });
+  const url = `/api/uploads/${req.file.filename}`;
+  tryUnlinkFromUrl(req.user.coverImage);
+  const user = await prisma.user.update({ where: { id: req.user.id }, data: { coverImage: url } });
+  await audit(req.user.id, 'cover_updated', null, null, req);
+  const { passwordHash, ...safe } = user;
+  res.json({ user: safe });
+});
+
+authRouter.delete('/me/cover', requireAuth, async (req, res) => {
+  tryUnlinkFromUrl(req.user.coverImage);
+  const user = await prisma.user.update({ where: { id: req.user.id }, data: { coverImage: null } });
+  const { passwordHash, ...safe } = user;
+  res.json({ user: safe });
 });

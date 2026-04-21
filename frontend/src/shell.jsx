@@ -89,10 +89,15 @@ export function Sidebar({ current, setCurrent, onOpenSearch, onLogout }) {
       </nav>
 
       <div className="sidebar-foot">
-        <Avatar user={user} size={34} showStatus />
-        <div className="info">
-          <div className="n">{user?.name}</div>
-          <div className="r">{user?.roleDesc || user?.role}</div>
+        <div onClick={() => setCurrent('profile')} className="tip" data-tip="Meu perfil"
+          style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, cursor: 'pointer', padding: 4, margin: -4, borderRadius: 8 }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          <Avatar user={user} size={34} showStatus />
+          <div className="info">
+            <div className="n">{user?.name}</div>
+            <div className="r">{user?.roleDesc || user?.role}</div>
+          </div>
         </div>
         <button className="icon-btn tip" data-tip="Sair" onClick={() => { onLogout(); toast('Até logo!', 'info'); }}>
           {Icons.logout}
@@ -102,7 +107,7 @@ export function Sidebar({ current, setCurrent, onOpenSearch, onLogout }) {
   );
 }
 
-export function Topbar({ crumbs, onThemeToggle, onOpenTweaks }) {
+export function Topbar({ crumbs, onThemeToggle, onOpenTweaks, setCurrent }) {
   const { user } = useAuth();
   return (
     <header className="topbar">
@@ -118,7 +123,10 @@ export function Topbar({ crumbs, onThemeToggle, onOpenTweaks }) {
         <button className="icon-btn tip" data-tip="Alternar tema" onClick={onThemeToggle}>{Icons.moon}</button>
         <button className="icon-btn tip" data-tip="Tweaks" onClick={onOpenTweaks}>{Icons.settings}</button>
         <div style={{ width: 1, height: 24, background: 'var(--border-subtle)', margin: '0 6px' }} />
-        <Avatar user={user} size={32} showStatus />
+        <button onClick={() => setCurrent?.('profile')} className="tip" data-tip="Meu perfil"
+          style={{ background: 'transparent', padding: 0, cursor: 'pointer', borderRadius: '50%' }}>
+          <Avatar user={user} size={32} showStatus />
+        </button>
       </div>
     </header>
   );

@@ -32,7 +32,7 @@ vaultRouter.get('/', async (req, res) => {
   const items = await prisma.vaultItem.findMany({
     where,
     include: {
-      updatedBy: { select: { id: true, name: true, handle: true, color: true } },
+      updatedBy: { select: { id: true, name: true, handle: true, color: true, avatar: true } },
       category: true,
     },
     orderBy: { updatedAt: 'desc' },
@@ -63,7 +63,7 @@ vaultRouter.post('/', async (req, res) => {
       updatedById: req.user.id,
     },
     include: {
-      updatedBy: { select: { id: true, name: true, handle: true, color: true } },
+      updatedBy: { select: { id: true, name: true, handle: true, color: true, avatar: true } },
       category: true,
     },
   });
@@ -90,7 +90,7 @@ vaultRouter.patch('/:id', async (req, res) => {
     where: { id: req.params.id },
     data,
     include: {
-      updatedBy: { select: { id: true, name: true, handle: true, color: true } },
+      updatedBy: { select: { id: true, name: true, handle: true, color: true, avatar: true } },
       category: true,
     },
   });

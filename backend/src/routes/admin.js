@@ -126,7 +126,7 @@ adminRouter.get('/audit-logs', async (req, res) => {
   const logs = await prisma.auditLog.findMany({
     orderBy: { createdAt: 'desc' },
     take: 200,
-    include: { user: { select: { id: true, name: true, handle: true, color: true } } },
+    include: { user: { select: { id: true, name: true, handle: true, color: true, avatar: true } } },
   });
   res.json({ logs });
 });

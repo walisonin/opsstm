@@ -6,7 +6,7 @@ import { audit } from '../lib/audit.js';
 export const announcementsRouter = Router();
 announcementsRouter.use(requireAuth);
 
-const authorSelect = { id: true, name: true, handle: true, color: true };
+const authorSelect = { id: true, name: true, handle: true, color: true, avatar: true };
 
 announcementsRouter.get('/', async (req, res) => {
   const items = await prisma.announcement.findMany({

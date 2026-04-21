@@ -6,7 +6,7 @@ import { getIO } from '../lib/socket.js';
 export const chatRouter = Router();
 chatRouter.use(requireAuth);
 
-const authorSelect = { id: true, name: true, handle: true, color: true };
+const authorSelect = { id: true, name: true, handle: true, color: true, avatar: true };
 
 chatRouter.get('/channels', async (req, res) => {
   const channels = await prisma.chatChannel.findMany({

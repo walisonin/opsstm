@@ -6,7 +6,7 @@ import { audit } from '../lib/audit.js';
 export const forumRouter = Router();
 forumRouter.use(requireAuth);
 
-const authorSelect = { id: true, name: true, handle: true, color: true, title: true, role: true, avatar: true };
+const authorSelect = { id: true, name: true, handle: true, color: true, title: true, role: true, roleDesc: true, avatar: true, coverImage: true, status: true, bio: true, postCount: true, reputation: true, joined: true, lastSeen: true };
 
 forumRouter.get('/categories', async (req, res) => {
   const categories = await prisma.forumCategory.findMany({

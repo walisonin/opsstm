@@ -217,27 +217,46 @@ export function CmdK({ open, onClose, setCurrent }) {
 }
 
 export function UserModal({ user, onClose }) {
+  const [fresh, setFresh] = useState(null);
+  useEffect(() => {
+    if (!user?.id) { setFresh(null); return; }
+    let alive = true;
+    import('./api.js').then(({ api }) =>
+      api.users.get(user.id).then(d => { if (alive) setFresh(d.user); }).catch(() => {})
+    );
+    return () => { alive = false; };
+  }, [user?.id]);
+
   if (!user) return null;
+  const u = fresh || user;
+  const coverBg = u.coverImage
+    ? `url("${u.coverImage}") center/cover no-repeat`
+    : `linear-gradient(135deg, ${u.color || '#9fb42c'}, ${u.color || '#9fb42c'}99)`;
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
-        <div style={{ height: 110, background: `linear-gradient(135deg, ${user.color || '#9fb42c'}, ${user.color || '#9fb42c'}99)`, position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', right: -20, top: -20, opacity: 0.2 }}>
-            <Ladrilho color="#fff" size={160} />
-          </div>
-          <button className="icon-btn" onClick={onClose} style={{ position: 'absolute', top: 10, right: 10, color: 'white', background: 'rgba(0,0,0,0.2)' }}>{Icons.close}</button>
+        <div style={{ height: 110, background: coverBg, position: 'relative', overflow: 'hidden' }}>
+          {!u.coverImage && (
+            <div style={{ position: 'absolute', right: -20, top: -20, opacity: 0.2 }}>
+              <Ladrilho color="#fff" size={160} />
+            </div>
+          )}
+          <button className="icon-btn" onClick={onClose} style={{ position: 'absolute', top: 10, right: 10, color: 'white', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}>{Icons.close}</button>
         </div>
         <div style={{ padding: '0 var(--s-6) var(--s-6)', marginTop: -40 }}>
-          <Avatar user={user} size={80} showStatus />
-          <div style={{ marginTop: 14 }}>
-            <h3 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>{user.name}</h3>
-            <div style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 4 }}>{user.roleDesc || user.title || user.role} · @{user.handle}</div>
+          <div style={{ border: '4px solid var(--bg-surface)', borderRadius: '50%', width: 'fit-content' }}>
+            <Avatar user={u} size={80} showStatus />
           </div>
-          {user.bio && <p style={{ color: 'var(--text-secondary)', marginTop: 14, marginBottom: 20 }}>{user.bio}</p>}
+          <div style={{ marginTop: 14 }}>
+            <h3 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>{u.name}</h3>
+            <div style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 4 }}>{u.roleDesc || u.title || u.role} · @{u.handle}</div>
+          </div>
+          {u.bio && <p style={{ color: 'var(--text-secondary)', marginTop: 14, marginBottom: 20 }}>{u.bio}</p>}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, padding: '16px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
-            <ModalStat label="Posts" value={user.postCount ?? 0} />
-            <ModalStat label="Reputação" value={user.reputation ?? 0} />
-            <ModalStat label="Status" value={user.status === 'online' ? '🟢 Online' : user.status === 'away' ? '🟡 Ausente' : user.status === 'dnd' ? '🔴 Ocupado' : '⚫ Offline'} />
+            <ModalStat label="Posts" value={u.postCount ?? 0} />
+            <ModalStat label="Reputação" value={u.reputation ?? 0} />
+            <ModalStat label="Status" value={u.status === 'online' ? '🟢 Online' : u.status === 'away' ? '🟡 Ausente' : u.status === 'dnd' ? '🔴 Ocupado' : '⚫ Offline'} />
           </div>
         </div>
       </div>

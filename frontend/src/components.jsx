@@ -46,8 +46,8 @@ export function Ladrilho({ color = 'currentColor', size = 24, style, className =
 
 export function BrandMark({ size = 36 }) {
   return (
-    <div className="brand-mark" style={{ width: size, height: size, fontSize: size * 0.44 }}>
-      <span>st</span><span className="bar" style={{ height: size * 0.5 }} /><span>m</span>
+    <div className="brand-mark" style={{ width: size, height: size, fontSize: size * 0.32 }}>
+      <span>st</span><span className="bar" style={{ height: size * 0.4 }} /><span>m</span>
     </div>
   );
 }

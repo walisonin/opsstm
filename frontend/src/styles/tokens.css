@@ -1,6 +1,6 @@
 /* ============================================================
    STM Operações — Design Tokens
-   Brand: St Marché — Portal interno
+   Brand: St Marche — Portal interno
    ============================================================ */
 
 :root {
@@ -104,7 +104,7 @@
 }
 
 /* ============================================================
-   THEME: VERDE (St Marché green immersive)
+   THEME: VERDE (St Marche green immersive)
    ============================================================ */
 [data-theme="verde"] {
   --bg-base: #0e2d1b;

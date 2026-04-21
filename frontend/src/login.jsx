@@ -50,7 +50,7 @@ export default function Login() {
           <BrandMark size={48} />
           <div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#f2f5ea' }}>STM Operações</div>
-            <div style={{ fontSize: 12, color: 'rgba(242,245,234,0.65)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Portal interno · St Marché</div>
+            <div style={{ fontSize: 12, color: 'rgba(242,245,234,0.65)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>Portal interno · St Marche</div>
           </div>
         </div>
 
@@ -60,19 +60,19 @@ export default function Login() {
             Onde o time<br />se <span style={{ color: '#9fb42c' }}>encontra</span>.
           </h1>
           <p style={{ color: 'rgba(242,245,234,0.75)', fontSize: 16, marginTop: 20, maxWidth: 420 }}>
-            Um único lugar pra o time conversar, organizar acessos, compartilhar rotinas e deixar a operação rodando redonda.
+            Da padaria ao escritório, todo mundo no mesmo corredor. Conversas, acessos e decisões num só lugar — pra operação nunca perder o ritmo.
           </p>
         </div>
 
         <div style={{ position: 'relative', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(242,245,234,0.4)' }}>
-          © 2026 St Marché · v1.0
+          © 2026 St Marche · v1.0
         </div>
       </div>
 
       <div style={{ display: 'grid', placeItems: 'center', padding: '48px', position: 'relative' }}>
         <div style={{ width: '100%', maxWidth: 420 }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 32, textTransform: 'uppercase', letterSpacing: '-0.01em', margin: '0 0 8px' }}>Entrar</h2>
-          <p style={{ color: 'var(--text-secondary)', margin: '0 0 32px' }}>Use sua conta corporativa do St Marché.</p>
+          <p style={{ color: 'var(--text-secondary)', margin: '0 0 32px' }}>Use sua conta corporativa do St Marche.</p>
 
           <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>

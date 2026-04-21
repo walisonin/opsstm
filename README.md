@@ -1,6 +1,6 @@
 # STM Operações
 
-Portal interno do St Marché — sistema completo com login real, chat em tempo real, fórum, cofre de credenciais, ranking e administração.
+Portal interno do St Marche — sistema completo com login real, chat em tempo real, fórum, cofre de credenciais, ranking e administração.
 
 ## Stack
 

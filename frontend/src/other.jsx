@@ -138,7 +138,7 @@ export function Profile() {
   const colors = ['#9fb42c', '#7e3f62', '#1f6fb8', '#ea431b', '#eeb23e', '#1f8a8a', '#f2801f', '#c72124', '#947034', '#b4c93d'];
 
   const coverBg = user.coverImage
-    ? `url("${user.coverImage}") center/cover no-repeat`
+    ? `#0e2d1b url("${user.coverImage}") center/contain no-repeat`
     : `linear-gradient(135deg, ${form.color}, #174628)`;
 
   return (
@@ -147,23 +147,24 @@ export function Profile() {
       <input ref={coverInput} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={uploadCover} style={{ display: 'none' }} />
 
       <div className="card" style={{ position: 'relative', overflow: 'hidden', marginBottom: 24 }}>
-        <div style={{ height: 180, background: coverBg, position: 'relative' }}>
+        <div style={{ height: 220, background: coverBg, position: 'relative' }}>
           {!user.coverImage && <div style={{ position: 'absolute', right: -30, top: -30, opacity: 0.18 }}><Ladrilho color="#fff" size={200} /></div>}
           <div style={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 8 }}>
             {user.coverImage && (
-              <button className="btn btn-sm" style={{ background: 'rgba(0,0,0,0.5)', color: 'white', backdropFilter: 'blur(6px)' }} onClick={removeCover}>
+              <button className="btn btn-sm" style={{ background: 'rgba(0,0,0,0.55)', color: 'white', backdropFilter: 'blur(6px)' }} onClick={removeCover}>
                 {Icons.trash} Remover
               </button>
             )}
             <button className="btn btn-sm" disabled={busy.cover}
-              style={{ background: 'rgba(255,255,255,0.9)', color: 'var(--brand-green-800)' }}
+              style={{ background: 'rgba(255,255,255,0.92)', color: 'var(--brand-green-800)' }}
               onClick={() => coverInput.current?.click()}>
               {Icons.upload} {busy.cover ? 'Enviando...' : (user.coverImage ? 'Trocar capa' : 'Adicionar capa')}
             </button>
           </div>
         </div>
-        <div style={{ padding: '0 28px 24px', display: 'flex', gap: 22, alignItems: 'flex-end', marginTop: -40 }}>
-          <div style={{ position: 'relative', border: '4px solid var(--bg-surface)', borderRadius: '50%', cursor: 'pointer' }}
+
+        <div style={{ padding: '0 28px 24px', display: 'flex', gap: 22 }}>
+          <div style={{ marginTop: -60, position: 'relative', border: '4px solid var(--bg-surface)', borderRadius: '50%', cursor: 'pointer', flexShrink: 0, background: 'var(--bg-surface)' }}
             onClick={() => avatarInput.current?.click()} title="Clique para trocar">
             <Avatar user={{ ...user, ...form }} size={120} showStatus />
             <div className="avatar-overlay" style={{
@@ -179,10 +180,10 @@ export function Profile() {
               )}
             </div>
           </div>
-          <div style={{ flex: 1, paddingBottom: 6 }}>
+          <div style={{ flex: 1, minWidth: 0, paddingTop: 18 }}>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, textTransform: 'uppercase', margin: 0 }}>{user.name}</h2>
             <div style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 4 }}>{user.email} · @{user.handle}</div>
-            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
               <button className="btn btn-ghost btn-sm" onClick={() => avatarInput.current?.click()} disabled={busy.avatar}>
                 {Icons.upload} Trocar foto
               </button>
